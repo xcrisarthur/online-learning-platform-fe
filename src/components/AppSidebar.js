@@ -80,7 +80,7 @@ const AppSidebar = () => {
 
       const courseNavTitle = courses.map((course) => ({
         component: CNavTitle,
-        name: course.title,
+        name: course.course.title,
       }))
 
       // Only show data management for admin and lecturer roles

@@ -108,98 +108,128 @@ const Register = () => {
   }
 
   return (
-    <div className="bg-body-tertiary min-vh-100 d-flex flex-row align-items-center">
+    <div className="bg-body-tertiary min-vh-100 d-flex flex-row align-items-center p-3">
       <CContainer>
         <CRow className="justify-content-center">
-          <CCol md={9} lg={7} xl={6}>
-            <CCard className="mx-4">
-              <CCardBody className="p-4">
+          <CCol xs={12} sm={12} md={9} lg={7} xl={6}>
+            <CCard className="mx-2 mx-md-4">
+              <CCardBody className="p-3 p-md-4">
                 <CForm onSubmit={handleSubmit}>
-                  <h1>Register</h1>
-                  <p className="text-body-secondary">Create your account</p>
+                  <h1 className="text-center text-md-start mb-4">Register</h1>
+                  <p className="text-body-secondary text-center text-md-start mb-4">
+                    Create your account
+                  </p>
 
                   {error && (
-                    <CAlert color="danger" dismissible onClose={() => setError('')}>
+                    <CAlert 
+                      color="danger" 
+                      dismissible 
+                      onClose={() => setError('')}
+                      className="mb-4"
+                    >
                       {error}
                     </CAlert>
                   )}
 
-                  <CInputGroup className="mb-3">
-                    <CInputGroupText>
-                      <CIcon icon={cilUser} />
-                    </CInputGroupText>
-                    <CFormInput
-                      placeholder="First Name"
-                      name="first_name"
-                      value={formData.first_name}
-                      onChange={handleInputChange}
-                      required
-                    />
-                  </CInputGroup>
+                  <div className="mb-4">
+                    {/* First Name */}
+                    <CInputGroup className="mb-3">
+                      <CInputGroupText>
+                        <CIcon icon={cilUser} />
+                      </CInputGroupText>
+                      <CFormInput
+                        placeholder="First Name"
+                        name="first_name"
+                        value={formData.first_name}
+                        onChange={handleInputChange}
+                        required
+                        className="form-control-lg"
+                      />
+                    </CInputGroup>
 
-                  <CInputGroup className="mb-3">
-                    <CInputGroupText>
-                      <CIcon icon={cilUser} />
-                    </CInputGroupText>
-                    <CFormInput
-                      placeholder="Last Name"
-                      name="last_name"
-                      value={formData.last_name}
-                      onChange={handleInputChange}
-                      required
-                    />
-                  </CInputGroup>
+                    {/* Last Name */}
+                    <CInputGroup className="mb-3">
+                      <CInputGroupText>
+                        <CIcon icon={cilUser} />
+                      </CInputGroupText>
+                      <CFormInput
+                        placeholder="Last Name"
+                        name="last_name"
+                        value={formData.last_name}
+                        onChange={handleInputChange}
+                        required
+                        className="form-control-lg"
+                      />
+                    </CInputGroup>
 
-                  <CInputGroup className="mb-3">
-                    <CInputGroupText>@</CInputGroupText>
-                    <CFormInput
-                      type="email"
-                      placeholder="Email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleInputChange}
-                      required
-                    />
-                  </CInputGroup>
+                    {/* Email */}
+                    <CInputGroup className="mb-3">
+                      <CInputGroupText>@</CInputGroupText>
+                      <CFormInput
+                        type="email"
+                        placeholder="Email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleInputChange}
+                        required
+                        className="form-control-lg"
+                      />
+                    </CInputGroup>
 
-                  <CInputGroup className="mb-3">
-                    <CInputGroupText>
-                      <CIcon icon={cilLockLocked} />
-                    </CInputGroupText>
-                    <CFormInput
-                      type="password"
-                      placeholder="Password"
-                      name="password"
-                      value={formData.password}
-                      onChange={handleInputChange}
-                      required
-                    />
-                  </CInputGroup>
+                    {/* Password */}
+                    <CInputGroup className="mb-3">
+                      <CInputGroupText>
+                        <CIcon icon={cilLockLocked} />
+                      </CInputGroupText>
+                      <CFormInput
+                        type="password"
+                        placeholder="Password"
+                        name="password"
+                        value={formData.password}
+                        onChange={handleInputChange}
+                        required
+                        className="form-control-lg"
+                      />
+                    </CInputGroup>
 
-                  <CInputGroup className="mb-4">
-                    <CInputGroupText>
-                      <CIcon icon={cilLockLocked} />
-                    </CInputGroupText>
-                    <CFormInput
-                      type="password"
-                      placeholder="Confirm password"
-                      name="confirmPassword"
-                      value={formData.confirmPassword}
-                      onChange={handleInputChange}
-                      required
-                    />
-                  </CInputGroup>
-                  <CContainer className='border'>
-                    <p>Junior = konten yang lebih sederhana dan mudah dipahami oleh pelajar usia remaja.</p>
-                    <p>General = konten yang lebih mendalam dan komprehensif yang sesuai untuk mahasiswa, orang dewasa, dan kalangan profesional.</p>
+                    {/* Confirm Password */}
+                    <CInputGroup className="mb-4">
+                      <CInputGroupText>
+                        <CIcon icon={cilLockLocked} />
+                      </CInputGroupText>
+                      <CFormInput
+                        type="password"
+                        placeholder="Confirm password"
+                        name="confirmPassword"
+                        value={formData.confirmPassword}
+                        onChange={handleInputChange}
+                        required
+                        className="form-control-lg"
+                      />
+                    </CInputGroup>
+                  </div>
+
+                  {/* Class Level Information */}
+                  <CContainer className="border p-3 mb-4 rounded">
+                    <h6 className="mb-3 fw-bold">Class Level Information:</h6>
+                    <p className="small mb-2">
+                      <strong>Junior:</strong> Konten yang lebih sederhana dan mudah dipahami oleh pelajar usia remaja.
+                    </p>
+                    <p className="small mb-0">
+                      <strong>General:</strong> Konten yang lebih mendalam dan komprehensif yang sesuai untuk mahasiswa, 
+                      orang dewasa, dan kalangan profesional.
+                    </p>
                   </CContainer>
+
+                  {/* Class Level Selection */}
                   <CInputGroup className="mb-4">
-                    <CInputGroupText>Class Level</CInputGroupText>
+                    <CInputGroupText className="flex-nowrap">Class Level</CInputGroupText>
                     <CFormSelect
                       name="class_level"
                       value={formData.class_level}
                       onChange={handleInputChange}
                       required
+                      className="form-control-lg"
                     >
                       <option value="">Select Class Level</option>
                       <option value="junior">Junior</option>
@@ -207,8 +237,15 @@ const Register = () => {
                     </CFormSelect>
                   </CInputGroup>
 
-                  <div className="d-grid">
-                    <CButton color="success" type="submit" disabled={isLoading}>
+                  {/* Submit Button */}
+                  <div className="d-grid gap-2">
+                    <CButton 
+                      color="success" 
+                      type="submit" 
+                      disabled={isLoading}
+                      size="lg"
+                      className="px-4"
+                    >
                       {isLoading ? 'Creating Account...' : 'Create Account'}
                     </CButton>
                   </div>
