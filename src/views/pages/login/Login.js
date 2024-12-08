@@ -65,8 +65,8 @@ const Login = () => {
     <div className={`min-vh-100 d-flex align-items-center ${darkMode ? 'dark-mode' : ''}`}
       style={{
         background: darkMode 
-          ? 'linear-gradient(135deg, #1a1c1e 0%, #2d3436 100%)'
-          : 'linear-gradient(135deg, #667eea 0%, #448BA0FF 100%)',
+          ? 'linear-gradient(135deg, #667eea 0%, #448BA0FF 100%)'
+          : 'linear-gradient(135deg, #1a1c1e 0%, #2d3436 100%)',
         animation: 'gradientBG 15s ease infinite'
       }}>
       <CButton
