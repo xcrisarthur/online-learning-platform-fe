@@ -1,3 +1,5 @@
+/* eslint-disable react/no-unescaped-entities */
+/* eslint-disable prettier/prettier */
 import React, { useEffect, useState } from 'react'
 import {
   CContainer,
@@ -27,6 +29,7 @@ import {
   cilBadge,
   cilSave,
   cilX,
+  cilArrowCircleLeft,
 } from '@coreui/icons'
 import { getUsers, updateUser } from '../../services/api'
 
@@ -161,169 +164,242 @@ const Profile = () => {
   }
 
   return (
-    <CContainer className="py-4">
-      <CCard className="mb-4">
-        <CCardHeader className="d-flex align-items-center">
-          <CIcon icon={cilUser} size="xl" className="me-2" />
-          <h4 className="mb-0">Edit Profil Pengguna</h4>
-        </CCardHeader>
-        <CCardBody>
-          {alertType && (
-            <CAlert color={alertType} className="d-flex align-items-center">
-              {alertType === 'success' ? (
-                <CIcon icon={cilSave} className="flex-shrink-0 me-2" />
-              ) : (
-                <CIcon icon={cilX} className="flex-shrink-0 me-2" />
-              )}
-              {alertMessage}
-            </CAlert>
-          )}
+    <div className="bg-light d-flex flex-column">
+      <CContainer className="p-4">
+        {/* Main Profile Card */}
+        <CCard className="border-0 shadow-lg rounded-4 overflow-hidden mb-4">
+          <CCardHeader className="bg-primary text-white p-4 border-0">
+            <div className="d-flex align-items-center">
+              <div className="bg-white bg-opacity-25 p-3 rounded-circle me-3">
+                <CIcon icon={cilUser} size="xl" className="text-white" />
+              </div>
+              <div>
+                <h2 className="mb-1">Edit Profile</h2>
+                <p className="mb-0 text-white-50">Update your personal information</p>
+              </div>
+            </div>
+          </CCardHeader>
 
-          <CForm>
-            {/* Role Information */}
-            <CCard className="mb-4 border-secondary">
-              <CCardHeader className="bg-light">
-                <CIcon icon={cilBadge} className="me-2" />
-                Informasi Peran
-              </CCardHeader>
-              <CCardBody>
+          <CCardBody className="p-4">
+            {/* Alert Messages */}
+            {alertType && (
+              <CAlert 
+                color={alertType} 
+                className="d-flex align-items-center mb-4"
+                dismissible
+              >
+                <CIcon 
+                  icon={alertType === 'success' ? cilSave : cilX} 
+                  className="flex-shrink-0 me-2"
+                />
+                <div>{alertMessage}</div>
+              </CAlert>
+            )}
+
+            <CForm className="needs-validation">
+              {/* Role Information */}
+              <div className="profile-section mb-5">
+                <h5 className="text-primary d-flex align-items-center mb-4">
+                  <CIcon icon={cilBadge} className="me-2" />
+                  Role Information
+                </h5>
                 <CRow>
-                  <CCol md={6}>
-                    <CFormLabel htmlFor="role">Peran Pengguna</CFormLabel>
-                    <CInputGroup className="mb-3">
-                      <CInputGroupText>
-                        <CIcon icon={cilBadge} />
-                      </CInputGroupText>
-                      <CFormSelect
-                        disabled
-                        id="role"
-                        value={role}
-                        onChange={(e) => setRole(e.target.value)}
-                      >
-                        <option value="admin">Administrator</option>
-                        <option value="lecturer">Dosen</option>
-                        <option value="student">Mahasiswa</option>
-                      </CFormSelect>
-                    </CInputGroup>
-                    <CFormText>Anda terdaftar sebagai {getRoleLabel(role)}</CFormText>
+                  <CCol lg={6}>
+                    <div className="p-4 bg-light rounded-3">
+                      <CFormLabel className="mb-2">User Role</CFormLabel>
+                      <CInputGroup className="mb-2">
+                        <CInputGroupText>
+                          <CIcon icon={cilBadge} />
+                        </CInputGroupText>
+                        <CFormSelect
+                          disabled
+                          value={role}
+                          onChange={(e) => setRole(e.target.value)}
+                        >
+                          <option value="admin">Administrator</option>
+                          <option value="lecturer">Lecturer</option>
+                          <option value="student">Student</option>
+                        </CFormSelect>
+                      </CInputGroup>
+                      <CFormText>You are registered as {getRoleLabel(role)}</CFormText>
+                    </div>
                   </CCol>
                 </CRow>
-              </CCardBody>
-            </CCard>
+              </div>
 
-            {/* Personal Information */}
-            <CCard className="mb-4 border-secondary">
-              <CCardHeader className="bg-light">
-                <CIcon icon={cilPencil} className="me-2" />
-                Informasi Pribadi
-              </CCardHeader>
-              <CCardBody>
-                <CRow className="mb-3">
+              {/* Personal Information */}
+              <div className="profile-section mb-5">
+                <h5 className="text-primary d-flex align-items-center mb-4">
+                  <CIcon icon={cilUser} className="me-2" />
+                  Personal Information
+                </h5>
+                <CRow className="g-4">
                   <CCol md={6}>
-                    <CFormLabel htmlFor="firstName">Nama Depan</CFormLabel>
+                    <CFormLabel>First Name</CFormLabel>
                     <CInputGroup>
                       <CInputGroupText>
                         <CIcon icon={cilUser} />
                       </CInputGroupText>
                       <CFormInput
-                        id="firstName"
                         invalid={!!errors.firstName}
                         value={firstName}
                         onChange={(e) => setFirstName(e.target.value)}
-                        placeholder="Masukkan nama depan"
+                        placeholder="Enter first name"
                       />
-                      <CFormFeedback invalid>{errors.firstName}</CFormFeedback>
                     </CInputGroup>
+                    {errors.firstName && (
+                      <CFormFeedback className="d-block text-danger">
+                        {errors.firstName}
+                      </CFormFeedback>
+                    )}
                   </CCol>
                   <CCol md={6}>
-                    <CFormLabel htmlFor="lastName">Nama Belakang</CFormLabel>
+                    <CFormLabel>Last Name</CFormLabel>
                     <CInputGroup>
                       <CInputGroupText>
                         <CIcon icon={cilUser} />
                       </CInputGroupText>
                       <CFormInput
-                        id="lastName"
                         invalid={!!errors.lastName}
                         value={lastName}
                         onChange={(e) => setLastName(e.target.value)}
-                        placeholder="Masukkan nama belakang"
+                        placeholder="Enter last name"
                       />
-                      <CFormFeedback invalid>{errors.lastName}</CFormFeedback>
                     </CInputGroup>
+                    {errors.lastName && (
+                      <CFormFeedback className="d-block text-danger">
+                        {errors.lastName}
+                      </CFormFeedback>
+                    )}
                   </CCol>
                 </CRow>
-              </CCardBody>
-            </CCard>
+              </div>
 
-            {/* Account Information */}
-            <CCard className="mb-4 border-secondary">
-              <CCardHeader className="bg-light">
-                <CIcon icon={cilEnvelopeClosed} className="me-2" />
-                Informasi Akun
-              </CCardHeader>
-              <CCardBody>
-                <CRow className="mb-3">
+              {/* Account Information */}
+              <div className="profile-section mb-5">
+                <h5 className="text-primary d-flex align-items-center mb-4">
+                  <CIcon icon={cilEnvelopeClosed} className="me-2" />
+                  Account Information
+                </h5>
+                <CRow className="g-4">
                   <CCol md={6}>
-                    <CFormLabel htmlFor="email">Email</CFormLabel>
+                    <CFormLabel>Email Address</CFormLabel>
                     <CInputGroup>
                       <CInputGroupText>
                         <CIcon icon={cilEnvelopeClosed} />
                       </CInputGroupText>
                       <CFormInput
-                        id="email"
                         type="email"
                         invalid={!!errors.email}
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        placeholder="Masukkan email"
+                        placeholder="Enter email address"
                       />
-                      <CFormFeedback invalid>{errors.email}</CFormFeedback>
                     </CInputGroup>
+                    {errors.email && (
+                      <CFormFeedback className="d-block text-danger">
+                        {errors.email}
+                      </CFormFeedback>
+                    )}
                   </CCol>
                   <CCol md={6}>
-                    <CFormLabel htmlFor="password">Password</CFormLabel>
+                    <CFormLabel>New Password</CFormLabel>
                     <CInputGroup>
                       <CInputGroupText>
                         <CIcon icon={cilLockLocked} />
                       </CInputGroupText>
                       <CFormInput
-                        id="password"
                         type="password"
                         invalid={!!errors.password}
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        placeholder="Masukkan password baru"
+                        placeholder="Enter new password"
                       />
-                      <CFormFeedback invalid>{errors.password}</CFormFeedback>
                     </CInputGroup>
-                    <CFormText>Kosongkan jika tidak ingin mengubah password.</CFormText>
+                    {errors.password && (
+                      <CFormFeedback className="d-block text-danger">
+                        {errors.password}
+                      </CFormFeedback>
+                    )}
+                    <CFormText>Leave blank if you don't want to change password.</CFormText>
                   </CCol>
                 </CRow>
-              </CCardBody>
-            </CCard>
+              </div>
 
-            <div className="d-flex justify-content-end gap-2">
-              <CButton color="secondary" onClick={handleReset} disabled={saving}>
-                Reset
-              </CButton>
-              <CButton color="primary" onClick={handleSaveChanges} disabled={saving}>
-                {saving ? (
-                  <>
-                    <CSpinner size="sm" className="me-2" />
-                    Menyimpan...
-                  </>
-                ) : (
-                  <>
-                    <CIcon icon={cilSave} className="me-2" />
-                    Simpan Perubahan
-                  </>
-                )}
-              </CButton>
-            </div>
-          </CForm>
-        </CCardBody>
-      </CCard>
-    </CContainer>
+              {/* Action Buttons */}
+              <div className="d-flex justify-content-end gap-3">
+                <CButton 
+                  color="light" 
+                  onClick={handleReset} 
+                  disabled={saving}
+                  className="px-4"
+                >
+                  <CIcon icon={cilArrowCircleLeft} className="me-2" />
+                  Reset
+                </CButton>
+                <CButton 
+                  color="primary" 
+                  onClick={handleSaveChanges} 
+                  disabled={saving}
+                  className="px-4"
+                >
+                  {saving ? (
+                    <>
+                      <CSpinner size="sm" className="me-2" />
+                      Saving...
+                    </>
+                  ) : (
+                    <>
+                      <CIcon icon={cilSave} className="me-2" />
+                      Save Changes
+                    </>
+                  )}
+                </CButton>
+              </div>
+            </CForm>
+          </CCardBody>
+        </CCard>
+      </CContainer>
+
+      <style>
+        {`
+          .profile-section {
+            transition: transform 0.2s ease;
+          }
+          
+          .profile-section:hover {
+            transform: translateY(-2px);
+          }
+          
+          .form-control:focus {
+            border-color: #556ee6;
+            box-shadow: 0 0 0 0.2rem rgba(85, 110, 230, 0.25);
+          }
+          
+          .input-group-text {
+            background-color: #f8f9fa;
+            border-right: none;
+          }
+          
+          .form-control {
+            border-left: none;
+          }
+          
+          .form-control:focus + .input-group-text {
+            border-color: #556ee6;
+          }
+          
+          .btn {
+            transition: all 0.2s ease;
+          }
+          
+          .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+          }
+        `}
+      </style>
+    </div>
   )
 }
 

@@ -17,13 +17,15 @@ import {
   CCol,
 } from '@coreui/react-pro'
 import CIcon from '@coreui/icons-react'
-import { cilStar, cilPeople, cilChart, cilChartLine, cilUser } from '@coreui/icons'
+import { cilStar, cilPeople, cilChart, cilChartLine } from '@coreui/icons'
 import { getAllTests, getTestResults, getUsers } from '../../services/api'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faTrophy,
   faAward,
-  faStar
+  faStar,
+  faMedal,
+  faCrown
 } from '@fortawesome/free-solid-svg-icons'
 
 const Leaderboard = () => {
@@ -132,192 +134,211 @@ const Leaderboard = () => {
     return <span className="badge bg-light text-dark">{position + 1}</span>
   }
 
+  const getScoreColor = (score) => {
+    if (score >= 80) return 'success'
+    if (score >= 60) return 'warning'
+    return 'danger'
+  }
+
+  const getTopThreeStyles = (position) => {
+    const baseStyles = {
+      transition: 'all 0.3s ease',
+      animation: 'fadeIn 0.5s ease-in-out',
+    }
+
+    switch(position) {
+      case 0:
+        return {
+          ...baseStyles,
+          background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)',
+          transform: 'scale(1.05)',
+          zIndex: 3,
+          boxShadow: '0 8px 24px rgba(255, 215, 0, 0.2)',
+        }
+      case 1:
+        return {
+          ...baseStyles,
+          background: 'linear-gradient(135deg, #E8E8E8 0%, #B8B8B8 100%)',
+          zIndex: 2,
+          boxShadow: '0 6px 20px rgba(184, 184, 184, 0.2)',
+        }
+      case 2:
+        return {
+          ...baseStyles,
+          background: 'linear-gradient(135deg, #CD7F32 0%, #A0522D 100%)',
+          zIndex: 1,
+          boxShadow: '0 6px 20px rgba(205, 127, 50, 0.2)',
+        }
+      default:
+        return baseStyles
+    }
+  }
+  
   const renderStats = () => {
     const totalStudents = leaderboardData.length
-    const averageScore =
-      leaderboardData.reduce((acc, curr) => acc + curr.averageScore, 0) / totalStudents || 0
-    const highestScore = Math.max(...leaderboardData.map((student) => student.averageScore))
+    const averageScore = leaderboardData.reduce((acc, curr) => acc + curr.averageScore, 0) / totalStudents || 0
+    const highestScore = Math.max(...leaderboardData.map(student => student.averageScore))
+
+    const statCards = [
+      {
+        icon: cilPeople,
+        color: 'primary',
+        label: 'Total Pelajar',
+        value: totalStudents,
+        suffix: ''
+      },
+      {
+        icon: cilChart,
+        color: 'success',
+        label: 'Rata-rata Nilai',
+        value: averageScore.toFixed(1),
+        suffix: '%'
+      },
+      {
+        icon: cilChartLine,
+        color: 'warning',
+        label: 'Nilai Tertinggi',
+        value: highestScore,
+        suffix: '%'
+      }
+    ]
 
     return (
-      <CRow className="mb-4 g-3">
-        <CCol xs={12} md={4}>
-          <CCard className="h-100 border-0 shadow-sm">
-            <CCardBody className="d-flex align-items-center">
-              <div className="bg-primary bg-opacity-10 p-3 rounded-circle me-3">
-                <CIcon icon={cilPeople} size="xl" className="text-primary" />
-              </div>
-              <div>
-                <div className="text-medium-emphasis small">Jumlah Pelajar</div>
-                <div className="fs-4 fw-semibold">{totalStudents}</div>
-              </div>
-            </CCardBody>
-          </CCard>
-        </CCol>
-        <CCol xs={12} md={4}>
-          <CCard className="h-100 border-0 shadow-sm">
-            <CCardBody className="d-flex align-items-center">
-              <div className="bg-success bg-opacity-10 p-3 rounded-circle me-3">
-                <CIcon icon={cilChart} size="xl" className="text-success" />
-              </div>
-              <div>
-                <div className="text-medium-emphasis small">Rata-rata Nilai</div>
-                <div className="fs-4 fw-semibold">{averageScore.toFixed(2)}%</div>
-              </div>
-            </CCardBody>
-          </CCard>
-        </CCol>
-        <CCol xs={12} md={4}>
-          <CCard className="h-100 border-0 shadow-sm">
-            <CCardBody className="d-flex align-items-center">
-              <div className="bg-warning bg-opacity-10 p-3 rounded-circle me-3">
-                <CIcon icon={cilChartLine} size="xl" className="text-warning" />
-              </div>
-              <div>
-                <div className="text-medium-emphasis small">Nilai Tertinggi</div>
-                <div className="fs-4 fw-semibold">{highestScore}%</div>
-              </div>
-            </CCardBody>
-          </CCard>
-        </CCol>
+      <CRow className="g-4 mb-4">
+        {statCards.map((stat, index) => (
+          <CCol key={index} xs={12} md={4}>
+            <CCard className="h-100 border-0 shadow-sm hover-shadow">
+              <CCardBody className="d-flex align-items-center p-4">
+                <div className={`bg-${stat.color}-subtle p-3 rounded-4 me-3`}>
+                  <CIcon icon={stat.icon} size="xl" className={`text-${stat.color}`} />
+                </div>
+                <div>
+                  <h6 className="text-medium-emphasis small mb-1">{stat.label}</h6>
+                  <h2 className="mb-0 fw-bold">
+                    {stat.value}{stat.suffix}
+                  </h2>
+                </div>
+              </CCardBody>
+            </CCard>
+          </CCol>
+        ))}
       </CRow>
     )
   }
+
   const renderTopThree = () => {
     const topThree = leaderboardData.slice(0, 3)
-    // Urutan tetap sama [Juara 1, Juara 2, Juara 3]
+    const badgeIcons = [faCrown, faMedal, faStar]
+    const positions = ['First', 'Second', 'Third']
+
     return (
-      <CRow className="mb-4 g-3 align-items-center justify-content-center">
-        {/* Juara 2 - Silver */}
-        <CCol xs={12} md={4} className="order-md-1">
-          {topThree[1] && (
-            <CCard
-              className="text-center h-100 border-0 shadow-hover"
-              style={{
-                background: getTopThreeColors(1).background,
-                color: getTopThreeColors(1).text,
-                marginTop: '2rem',
-              }}
-            >
-              <CCardBody>
-                <div className="mb-3">
-                <FontAwesomeIcon icon={faAward} size="4x" className="text-secondary" />
-                </div>
-                <h3>{topThree[1].name}</h3>
-                <div className="position-absolute top-0 end-0 p-2">
-                  <span className="badge bg-primary rounded-pill">#2</span>
-                </div>
-                <div className="fs-2 fw-bold mb-2">{topThree[1].averageScore}%</div>
-                <div className="small mb-2">
-                  <span
-                    className={`badge ${
-                      topThree[1].averageScore >= 80
-                        ? 'bg-success'
-                        : topThree[1].averageScore >= 60
-                          ? 'bg-warning'
-                          : 'bg-danger'
-                    }`}
-                  >
-                    {topThree[1].averageScore >= 80
-                      ? 'Excellent'
-                      : topThree[1].averageScore >= 60
-                        ? 'Good'
-                        : 'Perlu Peningkatan'}
+      <CRow className="g-4 mb-5 py-4 align-items-stretch">
+        {[1, 0, 2].map((index) => (
+          <CCol key={index} xs={12} md={4} className="d-flex align-items-stretch">
+            {topThree[index] && (
+              <CCard 
+                className="w-100 border-0 overflow-hidden position-relative animate-card"
+                style={getTopThreeStyles(index)}
+              >
+                <div className="position-absolute top-0 start-0 p-3">
+                  <span className={`badge rounded-pill bg-${getScoreColor(topThree[index].averageScore)}`}>
+                    #{index + 1}
                   </span>
                 </div>
-                <div className="text-medium-emphasis">Menyelesaikan {topThree[1].totalTests} Tes</div>
-              </CCardBody>
-            </CCard>
-          )}
-        </CCol>
-
-        {/* Juara 1 - Gold */}
-        <CCol xs={12} md={4} className="order-md-2">
-          {topThree[0] && (
-            <CCard
-              className="text-center h-100 border-0 shadow-hover"
-              style={{
-                background: getTopThreeColors(0).background,
-                color: getTopThreeColors(0).text,
-                transform: 'scale(1.1)',
-                zIndex: 2,
-                marginTop: '-1rem',
-              }}
-            >
-              <CCardBody>
-                <div className="mb-3">
-                <FontAwesomeIcon icon={faTrophy} size="5x" className="text-success" />
-                </div>
-                <h3 style={{ fontSize: '1.75rem' }}>{topThree[0].name}</h3>
-                <div className="position-absolute top-0 end-0 p-2">
-                  <span className="badge bg-warning rounded-pill">#1</span>
-                </div>
-                <div className="fs-1 fw-bold mb-2">{topThree[0].averageScore}%</div>
-                <div className="small mb-2">
-                  <span
-                    className={`badge ${
-                      topThree[0].averageScore >= 80
-                        ? 'bg-success'
-                        : topThree[0].averageScore >= 60
-                          ? 'bg-warning'
-                          : 'bg-danger'
-                    }`}
-                  >
-                    {topThree[0].averageScore >= 80
-                      ? 'Excellent'
-                      : topThree[0].averageScore >= 60
-                        ? 'Good'
-                        : 'Perlu Peningkatan'}
-                  </span>
-                </div>
-                <div className="text-medium-emphasis">Menyelesaikan {topThree[0].totalTests} Tes</div>
-              </CCardBody>
-            </CCard>
-          )}
-        </CCol>
-
-        {/* Juara 3 - Bronze */}
-        <CCol xs={12} md={4} className="order-md-3">
-          {topThree[2] && (
-            <CCard
-              className="text-center h-100 border-0 shadow-hover"
-              style={{
-                background: getTopThreeColors(2).background,
-                color: getTopThreeColors(2).text,
-                marginTop: '2rem',
-              }}
-            >
-              <CCardBody>
-                <div className="mb-3">
-                <FontAwesomeIcon icon={faStar} size="3x" className="text-danger" />
-                </div>
-                <h3>{topThree[2].name}</h3>
-                <div className="position-absolute top-0 end-0 p-2">
-                  <span className="badge bg-danger rounded-pill">#3</span>
-                </div>
-                <div className="fs-2 fw-bold mb-2">{topThree[2].averageScore}%</div>
-                <div className="small mb-2">
-                  <span
-                    className={`badge ${
-                      topThree[2].averageScore >= 80
-                        ? 'bg-success'
-                        : topThree[2].averageScore >= 60
-                          ? 'bg-warning'
-                          : 'bg-danger'
-                    }`}
-                  >
-                    {topThree[2].averageScore >= 80
-                      ? 'Excellent'
-                      : topThree[2].averageScore >= 60
-                        ? 'Good'
-                        : 'Perlu Peningkatan'}
-                  </span>
-                </div>
-                <div className="text-medium-emphasis">Menyelesaikan {topThree[2].totalTests} Tes</div>
-              </CCardBody>
-            </CCard>
-          )}
-        </CCol>
+                
+                <CCardBody className="text-center p-4">
+                  <div className="mb-4 achievement-icon">
+                    <FontAwesomeIcon 
+                      icon={badgeIcons[index]} 
+                      size="3x"
+                      className={`text-${index === 0 ? 'warning' : index === 1 ? 'secondary' : 'danger'}`}
+                    />
+                  </div>
+                  
+                  <h3 className="mb-3 fw-bold" style={{ fontSize: index === 1 ? '1.75rem' : '1.5rem' }}>
+                    {topThree[index].name}
+                  </h3>
+                  
+                  <div className="score-display mb-3">
+                    <div className="fs-2 fw-bold mb-1">
+                      {topThree[index].averageScore}%
+                    </div>
+                    <span className={`badge bg-${getScoreColor(topThree[index].averageScore)} px-3 py-2`}>
+                      {topThree[index].averageScore >= 80 ? 'Excellent' : 
+                       topThree[index].averageScore >= 60 ? 'Good' : 'Needs Improvement'}
+                    </span>
+                  </div>
+                  
+                  <div className="text-muted">
+                    <small>Completed {topThree[index].totalTests} Tests</small>
+                  </div>
+                </CCardBody>
+              </CCard>
+            )}
+          </CCol>
+        ))}
       </CRow>
+    )
+  }
+
+  const renderLeaderboardTable = () => {
+    return (
+      <CCard className="border-0 shadow-sm">
+        <CCardHeader className="bg-transparent border-bottom p-4">
+          <h5 className="mb-0">Complete Rankings</h5>
+        </CCardHeader>
+        <CCardBody className="p-0">
+          <div className="table-responsive">
+            <CTable hover borderless className="mb-0">
+              <CTableHead className="bg-light">
+                <CTableRow>
+                  <CTableHeaderCell className="text-center" style={{ width: '80px' }}>Rank</CTableHeaderCell>
+                  <CTableHeaderCell>Student</CTableHeaderCell>
+                  <CTableHeaderCell className="text-center">Average Score</CTableHeaderCell>
+                  <CTableHeaderCell className="text-center">Tests Completed</CTableHeaderCell>
+                </CTableRow>
+              </CTableHead>
+              <CTableBody>
+                {leaderboardData.map((student, index) => (
+                  <CTableRow 
+                    key={student.studentId}
+                    className={`align-middle ${index < 3 ? 'table-active' : ''}`}
+                  >
+                    <CTableDataCell className="text-center">
+                      {index < 3 ? (
+                        <FontAwesomeIcon
+                          icon={index === 0 ? faCrown : index === 1 ? faMedal : faStar}
+                          className={`text-${index === 0 ? 'warning' : index === 1 ? 'secondary' : 'danger'}`}
+                        />
+                      ) : (
+                        <span className="text-muted">{index + 1}</span>
+                      )}
+                    </CTableDataCell>
+                    <CTableDataCell>
+                      <div className="d-flex align-items-center">
+                        <div className="ms-2">
+                          <div className="fw-semibold">{student.name}</div>
+                        </div>
+                      </div>
+                    </CTableDataCell>
+                    <CTableDataCell className="text-center">
+                      <span className={`badge bg-${getScoreColor(student.averageScore)} px-2 py-1`}>
+                        {student.averageScore}%
+                      </span>
+                    </CTableDataCell>
+                    <CTableDataCell className="text-center">
+                      <div className="d-flex align-items-center justify-content-center gap-2">
+                        <CIcon icon={cilChart} size="sm" className="text-primary" />
+                        <span>{student.totalTests}</span>
+                      </div>
+                    </CTableDataCell>
+                  </CTableRow>
+                ))}
+              </CTableBody>
+            </CTable>
+          </div>
+        </CCardBody>
+      </CCard>
     )
   }
 
@@ -343,98 +364,60 @@ const Leaderboard = () => {
     )
   }
 
-  return (
-    <CContainer className="px-4">
+return (
+    <CContainer className="p-4">
       <CCard className="border-0 shadow-lg">
-        <CCardHeader className="bg-transparent border-bottom-0">
+        <CCardHeader className="bg-transparent border-bottom-0 p-4">
           <div className="d-flex align-items-center">
-            <CIcon icon={cilStar} size="xl" className="text-warning me-2" />
-            <h3 className="mb-0">Papan Peringkat</h3>
+            <div className="bg-warning bg-opacity-10 p-3 rounded-circle me-3">
+              <CIcon icon={cilStar} size="xl" className="text-warning" />
+            </div>
+            <div>
+              <h2 className="mb-1">Leaderboard</h2>
+              <p className="text-medium-emphasis mb-0">
+                View rankings and student performance
+              </p>
+            </div>
           </div>
         </CCardHeader>
-        <CCardBody>
-          {/* Statistics Cards */}
+        
+        <CCardBody className="p-4">
           {renderStats()}
-
-          {/* Top 3 Winners */}
           {renderTopThree()}
-
-          {/* Full Leaderboard Table */}
-          <CCard className="border">
-            <CCardBody>
-              <h5 className="card-title mb-3">Peringkat Lengkap</h5>
-              <CTable hover responsive className="align-middle table-borderless">
-                <CTableHead className="bg-light">
-                  <CTableRow>
-                    <CTableHeaderCell className="text-center" style={{ width: '80px' }}>
-                      Peringkat
-                    </CTableHeaderCell>
-                    <CTableHeaderCell>Nama</CTableHeaderCell>
-                    <CTableHeaderCell className="text-center">Rata-rata Nilai</CTableHeaderCell>
-                    <CTableHeaderCell className="text-center">Total Tes</CTableHeaderCell>
-                  </CTableRow>
-                </CTableHead>
-                <CTableBody>
-                  {leaderboardData.map((student, index) => (
-                    <CTableRow key={student.studentId} className={index < 3 ? 'table-active' : ''}>
-                      <CTableDataCell className="text-center">
-                        {renderRankIcon(index)}
-                      </CTableDataCell>
-                      <CTableDataCell>
-                        <div className="d-flex align-items-center">
-                          <div className="ms-2">
-                            <div className="fw-bold">{student.name}</div>
-                            {/* <small className="text-medium-emphasis">
-                              Student ID: {student.studentId}
-                            </small> */}
-                          </div>
-                        </div>
-                      </CTableDataCell>
-                      <CTableDataCell className="text-center">
-                        <div
-                          className={`badge ${
-                            student.averageScore >= 80
-                              ? 'bg-success'
-                              : student.averageScore >= 60
-                                ? 'bg-warning'
-                                : 'bg-danger'
-                          } px-2 py-1`}
-                        >
-                          {student.averageScore}%
-                        </div>
-                        <div className="small text-medium-emphasis mt-1">
-                          {student.averageScore >= 80
-                            ? 'Excellent'
-                            : student.averageScore >= 60
-                              ? 'Good'
-                              : 'Perlu Peningkatan'}
-                        </div>
-                      </CTableDataCell>
-                      <CTableDataCell className="text-center">
-                        <div className="d-flex align-items-center justify-content-center">
-                          <CIcon icon={cilChart} size="sm" className="text-primary me-2" />
-                          <span>{student.totalTests}</span>
-                        </div>
-                        <small className="text-medium-emphasis d-block">Menyelesaikan Tes</small>
-                      </CTableDataCell>
-                    </CTableRow>
-                  ))}
-                </CTableBody>
-              </CTable>
-
-              {leaderboardData.length === 0 && (
-                <div className="text-center py-5">
-                  <CIcon icon={cilChart} size="3xl" className="text-secondary mb-3" />
-                  <h5 className="text-secondary">No Data Available</h5>
-                  <p className="text-medium-emphasis">
-                    Start taking tests to appear on the leaderboard!
-                  </p>
-                </div>
-              )}
-            </CCardBody>
-          </CCard>
+          {renderLeaderboardTable()}
         </CCardBody>
       </CCard>
+
+      <style>
+        {`
+          .hover-shadow {
+            transition: all 0.3s ease;
+          }
+          .hover-shadow:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1) !important;
+          }
+          
+          .animate-card {
+            transition: all 0.3s ease;
+          }
+          .animate-card:hover {
+            transform: translateY(-10px);
+          }
+          
+          .achievement-icon {
+            transition: all 0.3s ease;
+          }
+          .animate-card:hover .achievement-icon {
+            transform: scale(1.1);
+          }
+          
+          @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+          }
+        `}
+      </style>
     </CContainer>
   )
 }

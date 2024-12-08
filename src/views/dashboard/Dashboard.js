@@ -448,133 +448,344 @@ const Dashboard = () => {
   const renderStudentView = () => {
     const statusCounts = getStatusCounts()
     const overallProgress = calculateOverallProgress()
+    const allModulesCompleted = overallProgress === 100
 
     return (
       <>
-        {/* Overall Progress Card */}
-        <CCard className="mb-4 border-0 shadow-sm">
-          <CCardHeader className="bg-transparent border-bottom-0 pb-0">
-            <div className="d-flex align-items-center">
-              <CIcon icon={cilStar} size="xl" className="me-2 text-warning" />
-              <h4 className="mb-0">Progres Pembelajaran</h4>
+      {/* Completion Message */}
+      {allModulesCompleted && (
+        <CCard className="mb-4 border-0 shadow-lg bg-gradient-success overflow-hidden">
+          <CCardBody className="p-4 text-center text-white position-relative">
+            <div className="celebration-overlay"></div>
+            <div className="position-relative">
+              <h3 className="mb-3">🎉 Selamat! 🎉</h3>
+              <p className="mb-0 lead">
+                Anda telah berhasil menyelesaikan seluruh modul pembelajaran.
+                E-sertifikat Anda akan segera dibuatkan.
+              </p>
             </div>
-          </CCardHeader>
-          <CCardBody>
-            <div className="mb-4">
-              <div className="d-flex justify-content-between mb-2">
-                <span className="text-medium-emphasis">Total Progress</span>
-                <span className="fw-bold">{overallProgress}%</span>
+          </CCardBody>
+        </CCard>
+      )}
+
+        {/* Progress Overview Card */}
+      <CCard className="mb-4 border-0 shadow-lg overflow-hidden">
+        <div className="position-relative">
+          <div className="progress-wave"></div>
+          <CCardBody className="p-4">
+            <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
+              <div className="d-flex align-items-center mb-3 mb-md-0">
+                <div className="bg-primary bg-opacity-10 p-3 rounded-circle me-3">
+                  <CIcon icon={cilStar} size="xl" className="text-primary" />
+                </div>
+                <div>
+                  <h4 className="mb-0">Progress Overview</h4>
+                  <p className="text-medium-emphasis mb-0">Track your learning journey</p>
+                </div>
               </div>
-              <CProgress value={overallProgress} height={20} className="mb-2" color="success">
-                <small className="text-white fw-semibold">{overallProgress}%</small>
-              </CProgress>
+              <div className="progress-circle-container">
+                <div className="progress-circle" style={{"--progress": `${overallProgress}`}}>
+                  <span className="progress-value">{overallProgress}%</span>
+                </div>
+              </div>
             </div>
 
-            <CRow>
+            <CRow className="g-4">
               <CCol sm={12} md={4}>
-                <CCard className="bg-light border-0 mb-3 shadow-sm">
-                  <CCardBody className="d-flex align-items-center">
-                    <div className="bg-success bg-opacity-10 p-3 rounded-circle me-3">
-                      <CIcon icon={cilCheck} size="xl" className="text-success" />
-                    </div>
-                    <div>
-                      <div className="text-success fs-6 fw-semibold">Selesai</div>
-                      <div className="fs-2 fw-bold">{statusCounts.completed}</div>
-                    </div>
-                  </CCardBody>
-                </CCard>
+                <div className="status-card completed">
+                  <div className="icon-container">
+                    <CIcon icon={cilCheck} size="xl" />
+                  </div>
+                  <div className="content">
+                    <h3>{statusCounts.completed}</h3>
+                    <p>Completed</p>
+                  </div>
+                </div>
               </CCol>
-
               <CCol sm={12} md={4}>
-                <CCard className="bg-light border-0 mb-3 shadow-sm">
-                  <CCardBody className="d-flex align-items-center">
-                    <div className="bg-primary bg-opacity-10 p-3 rounded-circle me-3">
-                      <CIcon icon={cilClock} size="xl" className="text-primary" />
-                    </div>
-                    <div>
-                      <div className="text-primary fs-6 fw-semibold">Sedang Dikerjakan</div>
-                      <div className="fs-2 fw-bold">{statusCounts.inProgress}</div>
-                    </div>
-                  </CCardBody>
-                </CCard>
+                <div className="status-card in-progress">
+                  <div className="icon-container">
+                    <CIcon icon={cilClock} size="xl" />
+                  </div>
+                  <div className="content">
+                    <h3>{statusCounts.inProgress}</h3>
+                    <p>In Progress</p>
+                  </div>
+                </div>
               </CCol>
-
               <CCol sm={12} md={4}>
-                <CCard className="bg-light border-0 mb-3 shadow-sm">
-                  <CCardBody className="d-flex align-items-center">
-                    <div className="bg-secondary bg-opacity-10 p-3 rounded-circle me-3">
-                      <CIcon icon={cilBook} size="xl" className="text-secondary" />
-                    </div>
-                    <div>
-                      <div className="text-secondary fs-6 fw-semibold">Belum Dimulai</div>
-                      <div className="fs-2 fw-bold">{statusCounts.notStarted}</div>
-                    </div>
-                  </CCardBody>
-                </CCard>
+                <div className="status-card not-started">
+                  <div className="icon-container">
+                    <CIcon icon={cilBook} size="xl" />
+                  </div>
+                  <div className="content">
+                    <h3>{statusCounts.notStarted}</h3>
+                    <p>Not Started</p>
+                  </div>
+                </div>
               </CCol>
             </CRow>
           </CCardBody>
-        </CCard>
+        </div>
+      </CCard>
 
-        {/* Module Progress */}
-        <div className="module-progress">
-          <h4 className="mb-3">Detail Progress Modul</h4>
-          <CRow>
-            {progressData.map((item) => (
-              <CCol sm={12} md={6} key={item.module_id} className="mb-3">
-                <CCard className="mb-4 border-0 shadow-sm h-100">
-                  <CCardHeader className="bg-transparent border-bottom-0">
-                    <h5 className="mb-1">
-
-                      {/* edit bagian ini */}
-
-                      {item.moduleName}
-                      
-
-                    </h5> 
-                    <span className="badge bg-info text-white">
-                      {getModuleTypeInIndonesian(item.moduleType)}
+      {/* Module Progress */}
+      <div className="module-progress">
+        <h4 className="mb-4 d-flex align-items-center">
+          <CIcon icon={cilBook} className="me-2" />
+          Module Progress Details
+        </h4>
+        <CRow className="g-4">
+          {progressData.map((item) => (
+            <CCol sm={12} md={6} lg={4} key={item.module_id}>
+              <div className={`module-card ${item.status}`}>
+                <div className="module-header">
+                  <h5>{item.moduleName}</h5>
+                  <span className="module-type">
+                    {getModuleTypeInIndonesian(item.moduleType)}
+                  </span>
+                </div>
+                <div className="module-content">
+                  <div className="progress-bar-wrapper">
+                    <div 
+                      className="progress-bar" 
+                      style={{width: `${item.status === 'completed' ? '100' : '0'}%`}}
+                    ></div>
+                  </div>
+                  <div className="module-status">
+                    <span className={`status-badge ${item.status}`}>
+                      {item.status === 'completed' ? 'Completed' :
+                       item.status === 'in_progress' ? 'In Progress' : 'Not Started'}
                     </span>
-                  </CCardHeader>
-                  <CCardBody>
-                    <CProgress
-                      value={item.status === 'completed' ? 100 : 0}
-                      height={10}
-                      className="mb-3"
-                      color={item.status === 'completed' ? 'success' : 'secondary'}
-                    />
-                    <div className="d-flex justify-content-between align-items-center mb-2">
-                      <span className="text-medium-emphasis">
-                        Progress: {item.status === 'completed' ? '100%' : '0%'}
-                      </span>
-                      <span
-                        className={`badge ${
-                          item.status === 'completed'
-                            ? 'bg-success'
-                            : item.status === 'in_progress'
-                              ? 'bg-primary'
-                              : 'bg-secondary'
-                        }`}
-                      >
-                        {item.status === 'completed'
-                          ? 'Selesai'
-                          : item.status === 'in_progress'
-                            ? 'Sedang Dikerjakan'
-                            : 'Belum Dimulai'}
-                      </span>
-                    </div>
                     {item.completed_at && (
-                      <small className="d-block text-medium-emphasis">
-                        <i className="far fa-clock me-1"></i>
-                        Diselesaikan pada: {formatDate(item.completed_at)}
+                      <small className="completion-date">
+                        Completed: {formatDate(item.completed_at)}
                       </small>
                     )}
-                  </CCardBody>
-                </CCard>
-              </CCol>
-            ))}
-          </CRow>
-        </div>
+                  </div>
+                </div>
+              </div>
+            </CCol>
+          ))}
+        </CRow>
+      </div>
+
+      <style>
+        {`
+          .celebration-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(76, 175, 80, 0.8), rgba(67, 160, 71, 0.8));
+            animation: celebrate 2s ease-in-out infinite;
+          }
+
+          @keyframes celebrate {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 0.9; }
+          }
+
+          .progress-wave {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 8px;
+            background: linear-gradient(90deg, #4CAF50, #2196F3, #9C27B0);
+            animation: progress-wave 2s linear infinite;
+            background-size: 200% 100%;
+          }
+
+          @keyframes progress-wave {
+            0% { background-position: 100% 0; }
+            100% { background-position: -100% 0; }
+          }
+
+          .progress-circle-container {
+            width: 120px;
+            height: 120px;
+          }
+
+          .progress-circle {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: conic-gradient(
+              #4CAF50 calc(var(--progress) * 1%),
+              #f0f0f0 0
+            );
+            position: relative;
+          }
+
+          .progress-circle::before {
+            content: '';
+            position: absolute;
+            inset: 10px;
+            border-radius: 50%;
+            background: white;
+          }
+
+          .progress-value {
+            position: relative;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #333;
+          }
+
+          .status-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid rgba(0,0,0,0.1);
+          }
+
+          .status-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+          }
+
+          .status-card .icon-container {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+          }
+
+          .status-card.completed .icon-container {
+            background: rgba(76, 175, 80, 0.1);
+            color: #4CAF50;
+          }
+
+          .status-card.in-progress .icon-container {
+            background: rgba(33, 150, 243, 0.1);
+            color: #2196F3;
+          }
+
+          .status-card.not-started .icon-container {
+            background: rgba(158, 158, 158, 0.1);
+            color: #9E9E9E;
+          }
+
+          .status-card .content h3 {
+            font-size: 2rem;
+            margin: 0;
+            line-height: 1;
+          }
+
+          .status-card .content p {
+            margin: 0;
+            color: #666;
+          }
+
+          .module-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid rgba(0,0,0,0.1);
+          }
+
+          .module-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+          }
+
+          .module-header {
+            padding: 1.5rem;
+            background: #f8f9fa;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+          }
+
+          .module-header h5 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.1rem;
+          }
+
+          .module-type {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 999px;
+            font-size: 0.8rem;
+            background: rgba(33, 150, 243, 0.1);
+            color: #2196F3;
+          }
+
+          .module-content {
+            padding: 1.5rem;
+          }
+
+          .progress-bar-wrapper {
+            height: 8px;
+            background: #f0f0f0;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+          }
+
+          .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #4CAF50, #45a049);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+          }
+
+          .module-status {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+          }
+
+          .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 999px;
+            font-size: 0.8rem;
+          }
+
+          .status-badge.completed {
+            background: rgba(76, 175, 80, 0.1);
+            color: #4CAF50;
+          }
+
+          .status-badge.in_progress {
+            background: rgba(33, 150, 243, 0.1);
+            color: #2196F3;
+          }
+
+          .status-badge.not_started {
+            background: rgba(158, 158, 158, 0.1);
+            color: #9E9E9E;
+          }
+
+          .completion-date {
+            color: #666;
+            font-size: 0.8rem;
+          }
+
+          @media (max-width: 768px) {
+            .progress-circle-container {
+              width: 100px;
+              height: 100px;
+              margin: 1rem auto;
+            }
+
+            .status-card {
+              margin-bottom: 1rem;
+            }
+          }
+        `}
+      </style>
       </>
     )
   }
