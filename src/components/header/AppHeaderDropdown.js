@@ -32,7 +32,7 @@ const AppHeaderDropdown = () => {
       </CDropdownToggle>
       <CDropdownMenu>
         <CDropdownHeader>{t('account')}</CDropdownHeader>
-        <CDropdownItem href="#">
+        <CDropdownItem href="#/profile">
           <CIcon icon={cilUser} className="me-2" />
           {t('profile')}
         </CDropdownItem>

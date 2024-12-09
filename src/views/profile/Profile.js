@@ -157,14 +157,14 @@ const Profile = () => {
   const getRoleLabel = (roleValue) => {
     const roles = {
       admin: 'Administrator',
-      lecturer: 'Dosen',
-      student: 'Mahasiswa',
+      lecturer: 'Lecturer',
+      student: 'Student',
     }
     return roles[roleValue] || roleValue
   }
 
   return (
-    <div className="bg-light d-flex flex-column">
+    <div className="d-flex flex-column">
       <CContainer className="p-4">
         {/* Main Profile Card */}
         <CCard className="border-0 shadow-lg rounded-4 overflow-hidden mb-4">
@@ -183,13 +183,9 @@ const Profile = () => {
           <CCardBody className="p-4">
             {/* Alert Messages */}
             {alertType && (
-              <CAlert 
-                color={alertType} 
-                className="d-flex align-items-center mb-4"
-                dismissible
-              >
-                <CIcon 
-                  icon={alertType === 'success' ? cilSave : cilX} 
+              <CAlert color={alertType} className="d-flex align-items-center mb-4" dismissible>
+                <CIcon
+                  icon={alertType === 'success' ? cilSave : cilX}
                   className="flex-shrink-0 me-2"
                 />
                 <div>{alertMessage}</div>
@@ -205,23 +201,44 @@ const Profile = () => {
                 </h5>
                 <CRow>
                   <CCol lg={6}>
-                    <div className="p-4 bg-light rounded-3">
+                    <div
+                      className="p-4 rounded-3"
+                      style={{
+                        backgroundColor: 'var(--bs-light)',
+                        color: 'var(--bs-dark)',
+                        transition: 'background-color 0.3s, color 0.3s',
+                      }}
+                    >
                       <CFormLabel className="mb-2">User Role</CFormLabel>
                       <CInputGroup className="mb-2">
-                        <CInputGroupText>
+                        <CInputGroupText
+                          style={{
+                            backgroundColor: 'var(--bs-light)',
+                            color: 'var(--bs-dark)',
+                            transition: 'background-color 0.3s, color 0.3s',
+                          }}
+                        >
                           <CIcon icon={cilBadge} />
                         </CInputGroupText>
                         <CFormSelect
                           disabled
                           value={role}
                           onChange={(e) => setRole(e.target.value)}
+                          style={{
+                            backgroundColor: 'var(--bs-light)',
+                            color: 'var(--bs-dark)',
+                            border: '1px solid var(--bs-dark-50)',
+                            transition: 'background-color 0.3s, color 0.3s, border-color 0.3s',
+                          }}
                         >
                           <option value="admin">Administrator</option>
                           <option value="lecturer">Lecturer</option>
                           <option value="student">Student</option>
                         </CFormSelect>
                       </CInputGroup>
-                      <CFormText>You are registered as {getRoleLabel(role)}</CFormText>
+                      <CFormText className="text-muted">
+                        You are registered as {getRoleLabel(role)}
+                      </CFormText>
                     </div>
                   </CCol>
                 </CRow>
@@ -237,7 +254,13 @@ const Profile = () => {
                   <CCol md={6}>
                     <CFormLabel>First Name</CFormLabel>
                     <CInputGroup>
-                      <CInputGroupText>
+                      <CInputGroupText
+                        style={{
+                          backgroundColor: 'var(--bs-light)',
+                          color: 'var(--bs-dark)',
+                          transition: 'background-color 0.3s, color 0.3s',
+                        }}
+                      >
                         <CIcon icon={cilUser} />
                       </CInputGroupText>
                       <CFormInput
@@ -256,7 +279,13 @@ const Profile = () => {
                   <CCol md={6}>
                     <CFormLabel>Last Name</CFormLabel>
                     <CInputGroup>
-                      <CInputGroupText>
+                      <CInputGroupText
+                        style={{
+                          backgroundColor: 'var(--bs-light)',
+                          color: 'var(--bs-dark)',
+                          transition: 'background-color 0.3s, color 0.3s',
+                        }}
+                      >
                         <CIcon icon={cilUser} />
                       </CInputGroupText>
                       <CFormInput
@@ -285,7 +314,13 @@ const Profile = () => {
                   <CCol md={6}>
                     <CFormLabel>Email Address</CFormLabel>
                     <CInputGroup>
-                      <CInputGroupText>
+                      <CInputGroupText
+                        style={{
+                          backgroundColor: 'var(--bs-light)',
+                          color: 'var(--bs-dark)',
+                          transition: 'background-color 0.3s, color 0.3s',
+                        }}
+                      >
                         <CIcon icon={cilEnvelopeClosed} />
                       </CInputGroupText>
                       <CFormInput
@@ -297,15 +332,19 @@ const Profile = () => {
                       />
                     </CInputGroup>
                     {errors.email && (
-                      <CFormFeedback className="d-block text-danger">
-                        {errors.email}
-                      </CFormFeedback>
+                      <CFormFeedback className="d-block text-danger">{errors.email}</CFormFeedback>
                     )}
                   </CCol>
                   <CCol md={6}>
                     <CFormLabel>New Password</CFormLabel>
                     <CInputGroup>
-                      <CInputGroupText>
+                      <CInputGroupText
+                        style={{
+                          backgroundColor: 'var(--bs-light)',
+                          color: 'var(--bs-dark)',
+                          transition: 'background-color 0.3s, color 0.3s',
+                        }}
+                      >
                         <CIcon icon={cilLockLocked} />
                       </CInputGroupText>
                       <CFormInput
@@ -328,18 +367,13 @@ const Profile = () => {
 
               {/* Action Buttons */}
               <div className="d-flex justify-content-end gap-3">
-                <CButton 
-                  color="light" 
-                  onClick={handleReset} 
-                  disabled={saving}
-                  className="px-4"
-                >
+                <CButton color="light" onClick={handleReset} disabled={saving} className="px-4">
                   <CIcon icon={cilArrowCircleLeft} className="me-2" />
                   Reset
                 </CButton>
-                <CButton 
-                  color="primary" 
-                  onClick={handleSaveChanges} 
+                <CButton
+                  color="primary"
+                  onClick={handleSaveChanges}
                   disabled={saving}
                   className="px-4"
                 >

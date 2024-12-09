@@ -1,7 +1,7 @@
+/* eslint-disable prettier/prettier */
 import React, { useEffect, useRef } from 'react'
 import { NavLink } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
-import { useTranslation } from 'react-i18next'
 import {
   CContainer,
   CDropdown,
@@ -17,35 +17,22 @@ import {
 } from '@coreui/react-pro'
 import CIcon from '@coreui/icons-react'
 import {
-  cilContrast,
-  cilApplicationsSettings,
   cilMenu,
   cilMoon,
   cilSun,
-  cilLanguage,
-  cifGb,
-  cifEs,
-  cifPl,
+  cilContrast,
 } from '@coreui/icons'
 
-import { AppBreadcrumb } from './index'
-
-import {
-  AppHeaderDropdown,
-  AppHeaderDropdownMssg,
-  AppHeaderDropdownNotif,
-  AppHeaderDropdownTasks,
-} from './header/index'
+import { AppHeaderDropdown } from './header/index'
 
 const AppHeader = () => {
   const headerRef = useRef()
-  const { colorMode, setColorMode } = useColorModes('coreui-pro-react-admin-template-theme-default')
-  const { i18n, t } = useTranslation()
-
+  const { colorMode, setColorMode } = useColorModes('coreui-pro-react-admin-template-theme')
+  
   const dispatch = useDispatch()
-  const asideShow = useSelector((state) => state.asideShow)
   const sidebarShow = useSelector((state) => state.sidebarShow)
 
+  // Add shadow effect on scroll
   useEffect(() => {
     document.addEventListener('scroll', () => {
       headerRef.current &&
@@ -54,69 +41,45 @@ const AppHeader = () => {
   }, [])
 
   return (
-    <CHeader position="sticky" className="mb-4 p-0" ref={headerRef}>
-      <CContainer className="border-bottom px-4" fluid>
+    <CHeader 
+      position="sticky" 
+      className={`mb-4 p-0 ${colorMode === 'dark' ? 'dark-header' : ''}`}
+      ref={headerRef}
+    >
+      <CContainer 
+        className={`border-bottom px-4 ${colorMode === 'dark' ? 'border-dark' : ''}`} 
+        fluid
+      >
         <CHeaderToggler
           onClick={() => dispatch({ type: 'set', sidebarShow: !sidebarShow })}
           style={{ marginInlineStart: '-14px' }}
+          className={colorMode === 'dark' ? 'text-light' : ''}
         >
           <CIcon icon={cilMenu} size="lg" />
         </CHeaderToggler>
+
         <CHeaderNav className="d-none d-md-flex">
           <CNavItem>
-            <CNavLink to="/dashboard" as={NavLink}>
-              {t('dashboard')}
+            <CNavLink 
+              to="/dashboard" 
+              as={NavLink}
+              className={colorMode === 'dark' ? 'text-light' : ''}
+            >
+              Dashboard
             </CNavLink>
           </CNavItem>
-          {/* <CNavItem>
-            <CNavLink href="#">{t('users')}</CNavLink>
-          </CNavItem>
-          <CNavItem>
-            <CNavLink href="#">{t('settings')}</CNavLink>
-          </CNavItem> */}
         </CHeaderNav>
-        <CHeaderNav className="d-none d-md-flex ms-auto">
-          {/* <AppHeaderDropdownNotif /> */}
-          {/* <AppHeaderDropdownTasks /> */}
-          {/* <AppHeaderDropdownMssg /> */}
-        </CHeaderNav>
-        <CHeaderNav className="ms-auto ms-md-0">
+
+        <CHeaderNav className="ms-auto">
           <li className="nav-item py-1">
-            <div className="vr h-100 mx-2 text-body text-opacity-75"></div>
+            <div className={`vr h-100 mx-2 ${colorMode === 'dark' ? 'text-light' : 'text-body'} text-opacity-75`}></div>
           </li>
-          {/* <CDropdown variant="nav-item" placement="bottom-end">
-            <CDropdownToggle caret={false}>
-              <CIcon icon={cilLanguage} size="lg" />
-            </CDropdownToggle>
-            <CDropdownMenu>
-              <CDropdownItem
-                active={i18n.language === 'en'}
-                className="d-flex align-items-center"
-                as="button"
-                onClick={() => i18n.changeLanguage('en')}
-              >
-                <CIcon className="me-2" icon={cifGb} size="lg" /> English
-              </CDropdownItem>
-              <CDropdownItem
-                active={i18n.language === 'es'}
-                className="d-flex align-items-center"
-                as="button"
-                onClick={() => i18n.changeLanguage('es')}
-              >
-                <CIcon className="me-2" icon={cifEs} size="lg" /> Español
-              </CDropdownItem>
-              <CDropdownItem
-                active={i18n.language === 'pl'}
-                className="d-flex align-items-center"
-                as="button"
-                onClick={() => i18n.changeLanguage('pl')}
-              >
-                <CIcon className="me-2" icon={cifPl} size="lg" /> Polski
-              </CDropdownItem>
-            </CDropdownMenu>
-          </CDropdown> */}
+          
           <CDropdown variant="nav-item" placement="bottom-end">
-            <CDropdownToggle caret={false}>
+            <CDropdownToggle 
+              caret={false}
+              className={colorMode === 'dark' ? 'text-light' : ''}
+            >
               {colorMode === 'dark' ? (
                 <CIcon icon={cilMoon} size="lg" />
               ) : colorMode === 'auto' ? (
@@ -125,7 +88,7 @@ const AppHeader = () => {
                 <CIcon icon={cilSun} size="lg" />
               )}
             </CDropdownToggle>
-            <CDropdownMenu>
+            <CDropdownMenu className={colorMode === 'dark' ? 'dropdown-menu-dark' : ''}>
               <CDropdownItem
                 active={colorMode === 'light'}
                 className="d-flex align-items-center"
@@ -133,20 +96,20 @@ const AppHeader = () => {
                 type="button"
                 onClick={() => setColorMode('light')}
               >
-                <CIcon className="me-2" icon={cilSun} size="lg" /> {t('light')}
+                <CIcon className="me-2" icon={cilSun} size="lg" /> Light
               </CDropdownItem>
               <CDropdownItem
-                active={colorMode === 'dark'}
+                active={colorMode === 'dark'} 
                 className="d-flex align-items-center"
                 as="button"
                 type="button"
                 onClick={() => setColorMode('dark')}
               >
-                <CIcon className="me-2" icon={cilMoon} size="lg" /> {t('dark')}
+                <CIcon className="me-2" icon={cilMoon} size="lg" /> Dark
               </CDropdownItem>
               <CDropdownItem
                 active={colorMode === 'auto'}
-                className="d-flex align-items-center"
+                className="d-flex align-items-center" 
                 as="button"
                 type="button"
                 onClick={() => setColorMode('auto')}
@@ -155,21 +118,52 @@ const AppHeader = () => {
               </CDropdownItem>
             </CDropdownMenu>
           </CDropdown>
+
           <li className="nav-item py-1">
-            <div className="vr h-100 mx-2 text-body text-opacity-75"></div>
+            <div className={`vr h-100 mx-2 ${colorMode === 'dark' ? 'text-light' : 'text-body'} text-opacity-75`}></div>
           </li>
+
           <AppHeaderDropdown />
         </CHeaderNav>
-        {/* <CHeaderToggler
-          onClick={() => dispatch({ type: 'set', asideShow: !asideShow })}
-          style={{ marginInlineEnd: '-12px' }}
-        >
-          <CIcon icon={cilApplicationsSettings} size="lg" />
-        </CHeaderToggler> */}
       </CContainer>
-      {/* <CContainer className="px-4" fluid>
-        <AppBreadcrumb />
-      </CContainer> */}
+
+      <style>
+        {`
+          .dark-header {
+            background-color: #1a1c1e !important;
+            color: #fff;
+          }
+
+          .dark-header .border-dark {
+            border-color: rgba(255,255,255,0.1) !important;
+          }
+
+          .dark-header .dropdown-menu-dark {
+            background-color: #2d3436;
+            border-color: rgba(255,255,255,0.1);
+          }
+
+          .dark-header .dropdown-item {
+            color: #fff;
+          }
+
+          .dark-header .dropdown-item:hover,
+          .dark-header .dropdown-item:focus {
+            background-color: rgba(255,255,255,0.1);
+          }
+
+          .dark-header .dropdown-item.active {
+            background-color: rgba(255,255,255,0.2);
+          }
+
+          @media (prefers-color-scheme: dark) {
+            .header-auto {
+              background-color: #1a1c1e;
+              color: #fff;
+            }
+          }
+        `}
+      </style>
     </CHeader>
   )
 }

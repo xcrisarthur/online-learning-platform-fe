@@ -14,31 +14,32 @@ import {
   CButton,
 } from '@coreui/react-pro'
 import CIcon from '@coreui/icons-react'
-import { cilUser, cilLockLocked, cilMoon, cilSun } from '@coreui/icons'
+import { cilUser, cilLockLocked } from '@coreui/icons'
 import { useNavigate } from 'react-router-dom'
 import { authService } from '../../../services/api'
 
 const Login = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const navigate = useNavigate()
   const [errorMessage, setErrorMessage] = useState('')
-  const [darkMode, setDarkMode] = useState(() => {
-    const savedMode = localStorage.getItem('darkMode')
-    return savedMode ? JSON.parse(savedMode) : false
-  })
+  const [isLoading, setIsLoading] = useState(false)
+  const navigate = useNavigate()
+
+  const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)')
+  const [isDarkMode, setIsDarkMode] = useState(prefersDarkScheme.matches)
 
   useEffect(() => {
-    localStorage.setItem('darkMode', JSON.stringify(darkMode))
-    if (darkMode) {
-      document.body.classList.add('dark-mode')
-    } else {
-      document.body.classList.remove('dark-mode')
-    }
-  }, [darkMode])
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
+    const handleChange = () => setIsDarkMode(mediaQuery.matches)
+    mediaQuery.addListener(handleChange)
+    return () => mediaQuery.removeListener(handleChange)
+  }, [])
 
   const handleLogin = async (e) => {
     e.preventDefault()
+    setIsLoading(true)
+    setErrorMessage('')
+
     try {
       const data = await authService.login({ email, password })
       const { token, role, user_id, first_name, last_name, class_level } = data
@@ -54,69 +55,63 @@ const Login = () => {
     } catch (err) {
       console.error('Login failed', err)
       setErrorMessage('Email atau password salah.')
+    } finally {
+      setIsLoading(false)
     }
   }
 
-  const toggleTheme = () => {
-    setDarkMode(!darkMode)
-  }
-
   return (
-    <div className={`min-vh-100 d-flex align-items-center ${darkMode ? 'dark-mode' : ''}`}
+    <div 
+      className="min-vh-100 d-flex align-items-center justify-content-center"
       style={{
-        background: darkMode 
+        background: isDarkMode 
           ? 'linear-gradient(135deg, #1a1c1e 0%, #2d3436 100%)'
-          : 'linear-gradient(135deg, #667eea 0%, #448BA0FF 100%)',
-        animation: 'gradientBG 15s ease infinite'
-      }}>
-      <CButton
-        onClick={toggleTheme}
-        className="position-fixed top-0 end-0 m-3 rounded-circle p-3"
-        style={{
-          background: darkMode ? '#2d3436' : '#ffffff',
-          border: 'none',
-          boxShadow: '0 2px 5px rgba(0,0,0,0.2)',
-          zIndex: 1000,
-          width: '46px',
-          height: '46px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
-        <CIcon 
-          icon={darkMode ? cilSun : cilMoon} 
-          size="xl"
-          className={darkMode ? 'text-white' : 'text-dark'}
-        />
-      </CButton>
-
+          : 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)',
+        transition: 'background 0.3s ease'
+      }}
+    >
       <CContainer>
         <CRow className="justify-content-center">
           <CCol xs={12} sm={12} md={8} lg={6} xl={5}>
-            <CCard className={`border-0 shadow-lg rounded-4 overflow-hidden ${darkMode ? 'bg-dark' : ''}`}>
-              <CCardBody className="p-5">
+            <CCard 
+              className="border-0 shadow-lg rounded-4 overflow-hidden login-card"
+              style={{
+                backgroundColor: isDarkMode ? 'rgba(45, 52, 54, 0.9)' : 'rgba(255, 255, 255, 0.9)',
+                backdropFilter: 'blur(10px)',
+                WebkitBackdropFilter: 'blur(10px)',
+                transition: 'all 0.3s ease'
+              }}
+            >
+              <CCardBody className="p-4 p-md-5">
                 <div className="text-center mb-4">
-                  <h1 className={`display-6 fw-bold mb-2 ${darkMode ? 'text-white' : 'text-primary'}`}>
+                  <h1 className={`display-6 fw-bold mb-2 ${isDarkMode ? 'text-white' : ''}`}>
                     Welcome
                   </h1>
-                  <p className={darkMode ? 'text-light' : 'text-muted'}>
+                  <p className={`${isDarkMode ? 'text-light' : 'text-medium-emphasis'}`}>
                     Sign in to continue to your account
                   </p>
                 </div>
 
                 <CForm onSubmit={handleLogin} className="needs-validation">
                   {errorMessage && (
-                    <div className="alert alert-danger alert-dismissible fade show" role="alert"
-                         style={{animation: 'shake 0.82s cubic-bezier(.36,.07,.19,.97) both'}}>
-                      <i className="fas fa-exclamation-circle me-2"></i>
+                    <div 
+                      className={`alert ${isDarkMode ? 'alert-danger bg-danger bg-opacity-10 text-danger' : 'alert-danger'}`}
+                      role="alert"
+                      style={{animation: 'shake 0.82s cubic-bezier(.36,.07,.19,.97) both'}}
+                    >
+                      <CIcon icon={cilLockLocked} className="me-2" />
                       {errorMessage}
                     </div>
                   )}
 
                   <CInputGroup className="mb-4">
-                    <CInputGroupText className={darkMode ? 'bg-secondary border-0' : 'bg-light border-0'}>
-                      <CIcon icon={cilUser} size="lg" className={darkMode ? 'text-light' : 'text-primary'} />
+                    <CInputGroupText 
+                      className={isDarkMode ? 'bg-dark border-0' : 'bg-light border-0'}
+                    >
+                      <CIcon 
+                        icon={cilUser} 
+                        className={isDarkMode ? 'text-light' : 'text-primary'}
+                      />
                     </CInputGroupText>
                     <CFormInput
                       type="email"
@@ -125,16 +120,18 @@ const Login = () => {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       required
-                      className={`border-0 border-start ps-2 ${darkMode ? 'bg-secondary text-white' : 'bg-light'}`}
-                      style={{
-                        transition: 'all 0.3s ease',
-                      }}
+                      className={`custom-input border-0 ${isDarkMode ? 'bg-dark text-white' : 'bg-light'}`}
                     />
                   </CInputGroup>
 
                   <CInputGroup className="mb-4">
-                    <CInputGroupText className={darkMode ? 'bg-secondary border-0' : 'bg-light border-0'}>
-                      <CIcon icon={cilLockLocked} size="lg" className={darkMode ? 'text-light' : 'text-primary'} />
+                    <CInputGroupText 
+                      className={isDarkMode ? 'bg-dark border-0' : 'bg-light border-0'}
+                    >
+                      <CIcon 
+                        icon={cilLockLocked} 
+                        className={isDarkMode ? 'text-light' : 'text-primary'}
+                      />
                     </CInputGroupText>
                     <CFormInput
                       type="password"
@@ -143,29 +140,25 @@ const Login = () => {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       required
-                      className={`border-0 border-start ps-2 ${darkMode ? 'bg-secondary text-white' : 'bg-light'}`}
-                      style={{
-                        transition: 'all 0.3s ease',
-                      }}
+                      className={`custom-input border-0 ${isDarkMode ? 'bg-dark text-white' : 'bg-light'}`}
                     />
                   </CInputGroup>
 
-                  <div className="d-flex justify-content-between align-items-center mb-4">
-                    <CButton 
-                      color={darkMode ? 'light' : 'primary'}
-                      type="submit"
-                      className="px-4 py-2 w-100"
-                      style={{
-                        transition: 'all 0.3s ease',
-                        boxShadow: '0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08)'
-                      }}>
-                      Sign In
-                    </CButton>
-                  </div>
+                  <CButton 
+                    color={isDarkMode ? 'light' : 'primary'}
+                    type="submit"
+                    className="w-100 py-2 btn-login"
+                    disabled={isLoading}
+                  >
+                    {isLoading ? (
+                      <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                    ) : null}
+                    Sign In
+                  </CButton>
                 </CForm>
 
                 <div className="text-center mt-4">
-                  <p className={`mb-0 ${darkMode ? 'text-light' : 'text-muted'}`}>
+                  <p className={`mb-0 ${isDarkMode ? 'text-light' : 'text-medium-emphasis'}`}>
                     © {new Date().getFullYear()} Integrity Academia
                   </p>
                 </div>
@@ -177,30 +170,48 @@ const Login = () => {
 
       <style>
         {`
-          @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+          .custom-input {
+            transition: all 0.3s ease;
           }
-          
+
+          .custom-input::placeholder {
+            color: ${isDarkMode ? 'rgba(255,255,255,0.6)' : 'rgba(0,0,0,0.4)'} !important;
+          }
+
+          .custom-input:focus {
+            background-color: ${isDarkMode ? '#3b4147 !important' : '#ffffff !important'};
+            box-shadow: none !important;
+          }
+
+          .btn-login {
+            transition: all 0.3s ease;
+          }
+
+          .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+          }
+
+          .login-card {
+            animation: fadeIn 0.5s ease-out;
+          }
+
+          @keyframes fadeIn {
+            from { 
+              opacity: 0;
+              transform: translateY(20px);
+            }
+            to { 
+              opacity: 1;
+              transform: translateY(0);
+            }
+          }
+
           @keyframes shake {
             10%, 90% { transform: translate3d(-1px, 0, 0); }
             20%, 80% { transform: translate3d(2px, 0, 0); }
             30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
             40%, 60% { transform: translate3d(4px, 0, 0); }
-          }
-
-          .form-control:focus {
-            box-shadow: none !important;
-            border-color: ${darkMode ? '#6c757d' : '#4f5d73'} !important;
-          }
-
-          .dark-mode .form-control::placeholder {
-            color: #adb5bd !important;
-          }
-
-          .dark-mode .form-control:focus {
-            background-color: #495057 !important;
           }
         `}
       </style>
