@@ -196,7 +196,17 @@ const PreTest = () => {
             message: 'Test Selesai Dilakukan!',
           })
           // Refresh test results data setelah menambahkan hasil baru
-          fetchAllData()
+          await fetchAllData()
+
+          // Set state setelah selesai
+          setIsVisible(false)
+          setIsTestEnded(true)
+          setSelectedOptions({})
+
+          // Tambahkan setTimeout untuk memberikan waktu alert muncul sebelum refresh
+          setTimeout(() => {
+            window.location.reload() // Refresh halaman
+          }, 500) 
         }
       } catch (error) {
         console.error('Error menyimpan test result:', error)

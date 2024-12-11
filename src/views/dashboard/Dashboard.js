@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unknown-property */
 /* eslint-disable prettier/prettier */
 import React, { useEffect, useState } from 'react'
 import {
@@ -21,6 +22,7 @@ import {
   CTableHeaderCell,
   CTableDataCell,
   CBadge,
+  cilCloudDownload,
 } from '@coreui/react-pro'
 import CIcon from '@coreui/icons-react'
 import {
@@ -454,18 +456,192 @@ const Dashboard = () => {
       <>
         {/* Completion Message */}
         {allModulesCompleted && (
-          <CCard className="mb-4 border-0 completion-card">
-            <CCardBody className="p-4 text-center text-white">
-              <div className="celebration-overlay"></div>
-              <div className="position-relative">
-                <h3 className="mb-3">🎉 Selamat! 🎉</h3>
-                <p className="mb-0 lead">
-                  Anda telah berhasil menyelesaikan seluruh modul pembelajaran. E-sertifikat Anda
-                  akan segera dibuatkan.
-                </p>
+        <CCard className="mb-4 border-0 completion-card">
+          <CCardBody className="p-4 text-center text-white">
+            <div className="celebration-overlay"></div>
+            <div className="position-relative">
+              <h3 className="mb-3">🎉 Selamat! 🎉</h3>
+              <p className="mb-0 lead">
+                Anda telah berhasil menyelesaikan seluruh modul pembelajaran. Berikut E-sertifikat
+                Anda.
+              </p>
+              <div className="certificate-container mt-4">
+                <svg viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+                  {/* <!-- Background --> */}
+                  <rect width="800" height="600" fill="#ffffff" />
+
+                  {/* <!-- Border Design --> */}
+                  <rect
+                    x="20"
+                    y="20"
+                    width="760"
+                    height="560"
+                    fill="none"
+                    stroke="#1E88E5"
+                    stroke-width="2"
+                  />
+                  <rect
+                    x="25"
+                    y="25"
+                    width="750"
+                    height="550"
+                    fill="none"
+                    stroke="#1E88E5"
+                    stroke-width="1"
+                    stroke-dasharray="2"
+                  />
+
+                  {/* <!-- Header --> */}
+                  <text
+                    x="400"
+                    y="80"
+                    font-family="Georgia, serif"
+                    font-size="40"
+                    text-anchor="middle"
+                    fill="#1E88E5"
+                  >
+                    SERTIFIKAT
+                  </text>
+
+                  {/* <!-- Subtitle --> */}
+                  <text
+                    x="400"
+                    y="120"
+                    font-family="Arial, sans-serif"
+                    font-size="20"
+                    text-anchor="middle"
+                    fill="#666666"
+                  >
+                    PENGHARGAAN
+                  </text>
+
+                  {/* <!-- Decorative Line --> */}
+                  <line x1="200" y1="140" x2="600" y2="140" stroke="#1E88E5" stroke-width="1" />
+
+                  {/* <!-- Certificate Text --> */}
+                  <text
+                    x="400"
+                    y="200"
+                    font-family="Arial, sans-serif"
+                    font-size="16"
+                    text-anchor="middle"
+                    fill="#333333"
+                  >
+                    Diberikan Kepada:
+                  </text>
+
+                  {/* <!-- Name (Added) --> */}
+                  <text
+                    x="400"
+                    y="280"
+                    font-family="Georgia, serif"
+                    font-size="32"
+                    font-weight="bold"
+                    text-anchor="middle"
+                    fill="#333333"
+                  >
+                    {username?.toUpperCase()}
+                  </text>
+
+                  {/* <!-- Name Underline --> */}
+                  <line x1="250" y1="300" x2="550" y2="300" stroke="#333333" stroke-width="0.5" />
+
+                  {/* <!-- Additional Text --> */}
+                  <text
+                    x="400"
+                    y="350"
+                    font-family="Arial, sans-serif"
+                    font-size="16"
+                    text-anchor="middle"
+                    fill="#333333"
+                  >
+                    Atas partisipasinya dalam
+                  </text>
+
+                  <text
+                    x="400"
+                    y="380"
+                    font-family="Georgia, serif"
+                    font-size="24"
+                    text-anchor="middle"
+                    fill="#1E88E5"
+                  >
+                    Program Pelatihan Integrity Academia
+                  </text>
+
+                  {/* <!-- Date --> */}
+                  <text
+                    x="400"
+                    y="450"
+                    font-family="Arial, sans-serif"
+                    font-size="14"
+                    text-anchor="middle"
+                    fill="#666666"
+                  >
+                    {`Bandung, ${new Date().toLocaleDateString('id-ID', {
+                      day: 'numeric',
+                      month: 'long',
+                      year: 'numeric',
+                    })}`}
+                  </text>
+
+                  {/* <!-- Signature Lines --> */}
+                  <line x1="200" y1="520" x2="350" y2="520" stroke="#333333" stroke-width="0.5" />
+                  <line x1="450" y1="520" x2="600" y2="520" stroke="#333333" stroke-width="0.5" />
+
+                  <text
+                    x="275"
+                    y="540"
+                    font-family="Arial, sans-serif"
+                    font-size="12"
+                    text-anchor="middle"
+                    fill="#666666"
+                  >
+                    Direktur Program
+                  </text>
+
+                  <text
+                    x="525"
+                    y="540"
+                    font-family="Arial, sans-serif"
+                    font-size="12"
+                    text-anchor="middle"
+                    fill="#666666"
+                  >
+                    Ketua Pelaksana
+                  </text>
+
+                  {/* <!-- Logo Placeholder --> */}
+                  <circle cx="400" cy="500" r="30" fill="none" stroke="#1E88E5" stroke-width="1" />
+                  <text
+                    x="400"
+                    y="505"
+                    font-family="Georgia, serif"
+                    font-size="20"
+                    text-anchor="middle"
+                    fill="#1E88E5"
+                  >
+                    iA
+                  </text>
+                </svg>
+                <button
+                  className="btn btn-light mt-3"
+                  onClick={() => window.open(`${process.env.PUBLIC_URL}/certificate.svg`, '_blank')}
+                >
+                  ⬇️ Download Sertifikat
+                </button>
               </div>
-            </CCardBody>
-          </CCard>
+            </div>
+          </CCardBody>
+
+          <style>
+            {`
+      .certificate-container img:hover {
+        transform: scale(1.02);
+      }
+    `}
+          </style>
+        </CCard>
         )}
 
         {/* Main Progress Card */}
@@ -708,6 +884,55 @@ const Dashboard = () => {
             margin-top: 0.5rem;
             font-size: 0.75rem;
           }
+
+          .certificate-container {
+      transition: all 0.3s ease;
+    }
+
+    .certificate-svg {
+      transition: transform 0.3s ease;
+    }
+
+    .certificate-svg:hover {
+      transform: scale(1.02);
+    }
+
+    /* Memperbaiki tampilan completion card */
+    .completion-card {
+      background: linear-gradient(135deg, #28a745, #20c997);
+      border-radius: 15px;
+      overflow: visible;
+    }
+
+    .completion-card .celebration-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(
+        45deg,
+        rgba(255, 255, 255, 0.1) 25%,
+        transparent 25%,
+        transparent 50%,
+        rgba(255, 255, 255, 0.1) 50%,
+        rgba(255, 255, 255, 0.1) 75%,
+        transparent 75%,
+        transparent
+      );
+      background-size: 64px 64px;
+      animation: slide 2s linear infinite;
+      opacity: 0.1;
+    }
+
+    @keyframes slide {
+      0% {
+        background-position: 0 0;
+      }
+      100% {
+        background-position: 64px 64px;
+      }
+    }
 
           @media (max-width: 768px) {
             .status-box {

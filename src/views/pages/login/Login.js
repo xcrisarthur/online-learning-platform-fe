@@ -1,5 +1,4 @@
 /* eslint-disable prettier/prettier */
-/* eslint-disable no-undef */
 import React, { useState, useEffect } from 'react'
 import {
   CContainer,
@@ -14,7 +13,7 @@ import {
   CButton,
 } from '@coreui/react-pro'
 import CIcon from '@coreui/icons-react'
-import { cilUser, cilLockLocked } from '@coreui/icons'
+import { cilUser, cilLockLocked, cilLowVision, cilWarning } from '@coreui/icons'
 import { useNavigate } from 'react-router-dom'
 import { authService } from '../../../services/api'
 
@@ -23,6 +22,7 @@ const Login = () => {
   const [password, setPassword] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
   const navigate = useNavigate()
 
   const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)')
@@ -58,6 +58,10 @@ const Login = () => {
     } finally {
       setIsLoading(false)
     }
+  }
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword)
   }
 
   return (
@@ -134,7 +138,7 @@ const Login = () => {
                       />
                     </CInputGroupText>
                     <CFormInput
-                      type="password"
+                      type={showPassword ? "text" : "password"}
                       placeholder="Password"
                       autoComplete="current-password"
                       value={password}
@@ -142,6 +146,16 @@ const Login = () => {
                       required
                       className={`custom-input border-0 ${isDarkMode ? 'bg-dark text-white' : 'bg-light'}`}
                     />
+                    <CInputGroupText 
+                      onClick={togglePasswordVisibility}
+                      style={{ cursor: 'pointer' }}
+                      className={isDarkMode ? 'bg-dark border-0' : 'bg-light border-0'}
+                    >
+                      <CIcon 
+                        icon={showPassword ? cilWarning : cilLowVision}
+                        className={isDarkMode ? 'text-light' : 'text-primary'}
+                      />
+                    </CInputGroupText>
                   </CInputGroup>
 
                   <CButton 

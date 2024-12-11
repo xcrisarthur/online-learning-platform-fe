@@ -238,6 +238,9 @@ const MiniTest = () => {
               message: `Selamat! Anda berhasil menyelesaikan tes dengan nilai akhir ${finalScoreToSubmit}!`,
             })
             fetchAllData()
+            setTimeout(() => {
+              window.location.reload()
+            }, 500)
           }
         } catch (error) {
           console.error('Error menyimpan test result:', error)
