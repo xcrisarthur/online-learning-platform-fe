@@ -2,17 +2,33 @@
 // src/services/api.js
 import axios from 'axios'
 
-const API_URL = 'https://backend-express-production-daa1.up.railway.app/api' // URL backend
+// Hosting Railway
+const API_URL = 'https://backend-express-production-daa1.up.railway.app/api'
+
+// Local
+// const API_URL = 'http://localhost:3000/api'
 
 // Function to get the token from localStorage
 const getToken = () => {
   return localStorage.getItem('token')
 }
 
-// Axios instance setup with basic configuration
+// Token yang akan digunakan untuk autentikasi
+const TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJhZG1pbjFAZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzM1ODA5ODUxLCJleHAiOjE3NDA5OTM4NTF9.sonE_7utF3VytX3BgV0upMJfiryjtcrbLM4w-NSFpVw'
+
+// Axios instance setup dengan konfigurasi dasar
 const axiosInstance = axios.create({
   baseURL: API_URL,
+  headers: {
+    'Authorization': `Bearer ${TOKEN}`,
+    'Content-Type': 'application/json'
+  }
 })
+
+// Axios instance setup with basic configuration
+// const axiosInstance = axios.create({
+//   baseURL: API_URL,
+// })
 
 // Interceptor to add token to the header of each request
 axiosInstance.interceptors.request.use(
@@ -92,6 +108,26 @@ const getQuestionsByTestId = async (testId) => {
     throw error
   }
 }
+
+const getTestById = async (testId) => {
+  try {
+    const response = await axiosInstance.get(`/tests/${testId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching test by ID:', error);
+    throw error;
+  }
+}
+
+const getAllAnnouncements = async () => {
+  try {
+    const response = await axiosInstance.get('/announcements');
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching announcements:', error);
+    throw error;
+  }
+};
 
 // Update a question
 const updateQuestion = async (questionId, updatedData) => {
@@ -309,7 +345,13 @@ const getUsers = async () => {
 // Function to create a new user
 const createUser = async (userData) => {
   try {
-    const response = await axiosInstance.post('/users', userData) // Adjust the endpoint as needed
+    // Pastikan header Authorization disertakan dalam request
+    const response = await axios.post(`${API_URL}/users`, userData, {
+      headers: {
+        'Authorization': `Bearer ${TOKEN}`,
+        'Content-Type': 'application/json'
+      }
+    })
     return response.data
   } catch (error) {
     console.error('Error creating user:', error)
@@ -447,4 +489,6 @@ export {
   getProgressTracking,
   getModuleContentJrByModuleId,
   updateModuleContentJr,
+  getTestById,
+  getAllAnnouncements,
 }

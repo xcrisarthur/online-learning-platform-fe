@@ -48,6 +48,8 @@ import {
   updateChoice,
   deleteChoice,
   getTestResults,
+  getModuleById,
+  getTestById
 } from '../../services/api'
 import axios from 'axios'
 
@@ -119,8 +121,12 @@ const PostTest = () => {
     title: '',
   })
 
-  const API_BASE_URL = 'https://backend-express-production-daa1.up.railway.app/api' // Replace with your API URL
+  // hosting railway
+    const API_BASE_URL = 'https://backend-express-production-daa1.up.railway.app/api'
 
+  // Local
+  // const API_BASE_URL = 'http://localhost:3000/api'
+  
   // Handle button click to start the test (student only)
   const handleStartTest = () => {
     if (!isVisible) {
@@ -147,6 +153,11 @@ const PostTest = () => {
   })
 
   const handleFinishTest = async () => {
+    const getTestId = await getTestById(test_id)
+    const getModuleId = getTestId.module_id
+    const moduleData = await getModuleById(getModuleId)
+    const moduleName = moduleData.module_title
+
     if (isVisible) {
       // Exit fullscreen
       if (document.exitFullscreen) {
@@ -195,6 +206,22 @@ const PostTest = () => {
             color: 'success',
             message: 'Test Selesai Dilakukan!',
           })
+
+          // Add announcement data
+          await axios.post(
+            `${API_BASE_URL}/announcements`,
+            {
+              module_id: test_id,
+              user_id: userId,
+              announcement_text: `Selamat Anda Telah Menyelesaikan ${moduleName}`,
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
+              },
+            },
+          )
+
           // Refresh test results data setelah menambahkan hasil baru
           await fetchAllData()
           // Set state setelah selesai

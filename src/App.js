@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import React, { Suspense, useEffect } from 'react'
 import { HashRouter, Route, Routes } from 'react-router-dom'
 import { useSelector } from 'react-redux'
@@ -13,6 +14,9 @@ import PrivateRoute from './components/PrivateRoute'
 const DefaultLayout = React.lazy(() => import('./layout/DefaultLayout'))
 const Login = React.lazy(() => import('./views/pages/login/Login'))
 const Register = React.lazy(() => import('./views/pages/register/Register'))
+const RegisterStudent = React.lazy(() => import('./views/pages/register/RegisterStudent'))
+const RegisterLecturer = React.lazy(() => import('./views/pages/register/RegisterLecturer'))
+
 // const Dashboard = React.lazy(() => import('./pages/Dashboard'))
 const Page404 = React.lazy(() => import('./views/pages/page404/Page404'))
 const Page500 = React.lazy(() => import('./views/pages/page500/Page500'))
@@ -52,6 +56,8 @@ const App = () => {
         <Routes>
           <Route exact path="/login" name="Login Page" element={<Login />} />
           <Route exact path="/register" name="Register Page" element={<Register />} />
+          <Route exact path="/register/student" name="Register Student Page" element={<RegisterStudent />} />
+          <Route exact path="/register/lecturer" name="Register Lecturer Page" element={<RegisterLecturer />} />
           <Route exact path="/404" name="Page 404" element={<Page404 />} />
           <Route exact path="/500" name="Page 500" element={<Page500 />} />
           <Route path="/apps/email/*" name="Email App" element={<EmailApp />} />

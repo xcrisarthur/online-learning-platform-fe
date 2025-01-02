@@ -51,6 +51,8 @@ import {
   updateChoice,
   deleteChoice,
   getTestResults,
+  getModuleById,
+  getTestById,
 } from '../../services/api'
 import axios from 'axios'
 
@@ -124,8 +126,13 @@ const MiniTest = () => {
     message: '',
     title: '',
   })
+  const [currentAttemptNumber, setCurrentAttemptNumber] = useState(0)
 
-  const API_BASE_URL = 'https://backend-express-production-daa1.up.railway.app/api' // Replace with your API URL
+  // hosting railway
+    const API_BASE_URL = 'https://backend-express-production-daa1.up.railway.app/api' 
+
+  // Local
+  // const API_BASE_URL = 'http://localhost:3000/api' 
 
   // Handle button click to start the test (student only)
   const handleStartTest = () => {
@@ -154,8 +161,13 @@ const MiniTest = () => {
     color: '',
     message: '',
   })
-
+  // console.log(test_id)
   const handleFinishTest = async () => {
+    const getTestId = await getTestById(test_id)
+    const getModuleId = getTestId.module_id
+    const moduleData = await getModuleById(getModuleId)
+    const moduleName = moduleData.module_title
+
     if (isVisible) {
       // Exit fullscreen
       if (document.exitFullscreen) {
@@ -237,6 +249,22 @@ const MiniTest = () => {
               color: 'success',
               message: `Selamat! Anda berhasil menyelesaikan tes dengan nilai akhir ${finalScoreToSubmit}!`,
             })
+
+            // Add announcement data
+            await axios.post(
+              `${API_BASE_URL}/announcements`,
+              {
+                module_id: test_id,
+                user_id: userId,
+                announcement_text: `Selamat Anda Telah Menyelesaikan ${moduleName}`,
+              },
+              {
+                headers: {
+                  Authorization: `Bearer ${localStorage.getItem('token')}`,
+                },
+              },
+            )
+
             fetchAllData()
             setTimeout(() => {
               window.location.reload()
@@ -639,6 +667,10 @@ const MiniTest = () => {
 
     if (test_id) fetchQuestionsAndChoices()
   }, [test_id])
+
+  useEffect(() => {
+    setCurrentAttemptNumber(attempts.length)
+  }, [attempts])
 
   // Handle opening the edit modal with question and choice data
   const openEditModal = async (question) => {
@@ -1500,7 +1532,6 @@ const MiniTest = () => {
                 </CCardBody>
               </CCard>
             )}
-
             {/* Tampilkan Soal */}
             <CCollapse visible={isVisible || userRole !== 'student'}>
               <CCard className="my-3">
@@ -1515,7 +1546,13 @@ const MiniTest = () => {
                             {choices[question.question_id]?.map((choice) => (
                               <CCol key={`option-${question.question_id}-${choice.choice_id}`}>
                                 <CFormCheck
-                                  button={{ color: 'success', variant: 'outline' }}
+                                  button={{
+                                    color:
+                                      currentAttemptNumber >= 1 && choice.is_correct === true
+                                        ? 'info'
+                                        : 'success',
+                                    variant: 'outline',
+                                  }}
                                   type="radio"
                                   name={`options-${question.question_id}`}
                                   id={`option-${question.question_id}-${choice.choice_id}`}
