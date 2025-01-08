@@ -14,7 +14,7 @@ const getToken = () => {
 }
 
 // Token yang akan digunakan untuk autentikasi
-const TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJhZG1pbjFAZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzM1ODA5ODUxLCJleHAiOjE3NDA5OTM4NTF9.sonE_7utF3VytX3BgV0upMJfiryjtcrbLM4w-NSFpVw'
+const TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJhZG1pbnNhdHVldXkxQGdtYWlsLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTczNjMwNTE2OSwiZXhwIjoxNzQxNDg5MTY5fQ.FLobJiL5E8OdMuFKagdWgDWGcK3PYySkyPQPWoa8uA8'
 
 // Axios instance setup dengan konfigurasi dasar
 const axiosInstance = axios.create({
