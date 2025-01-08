@@ -1548,7 +1548,7 @@ const MiniTest = () => {
                                 <CFormCheck
                                   button={{
                                     color:
-                                      currentAttemptNumber >= 1 && choice.is_correct === true
+                                      currentAttemptNumber >= 3 && choice.is_correct === true
                                         ? 'info'
                                         : 'success',
                                     variant: 'outline',
