@@ -171,6 +171,7 @@ const UserManagement = () => {
         email: newEmail,
         role: newUserRole,
         class_level: newUserClassLevel,
+        password: newEmail, // Set password sama dengan email
       })
       // Gunakan user_id dari user baru
       const newUserId = newUser.user_id
